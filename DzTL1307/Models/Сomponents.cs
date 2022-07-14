@@ -22,12 +22,14 @@ namespace DzTL1307.Models
             Model = model;
             Type = type;
             IdConfiguration = idConfiguration;
-            
-
+           
         }
-        public void UpdatePrice(decimal newPrice)
+        
+        public void Update(decimal price, string model, string type)
         {
-            Price= newPrice;
+            Price = price;
+            Model = model;
+            Type = type;
         }
         public override string ToString()
         {

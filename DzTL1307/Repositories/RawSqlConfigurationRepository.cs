@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DzTL1307.Models;
 using System.Data.SqlClient;
-
+using System.Data;
 
 namespace DzTL1307.Repositories
 {
@@ -16,9 +16,8 @@ namespace DzTL1307.Repositories
             using (SqlConnection con = new SqlConnection(DzTL1307.Properties.Resources.ConnectioonString))
             {
                 con.Open();
-                try
-                {
-                    using (SqlCommand command = new SqlCommand("INSERT INTO Сomponents VALUES(@Picker,@Description, @Type)", con))
+                
+                    using (SqlCommand command = new SqlCommand("INSERT INTO Configuration VALUES(@Picker,@Description, @Type)", con))
                     {
                         command.Parameters.Add(new SqlParameter(@"Picker", configuration.Picker));
                         command.Parameters.Add(new SqlParameter(@"Description", configuration.Description));
@@ -26,11 +25,8 @@ namespace DzTL1307.Repositories
                         command.ExecuteNonQuery();
                         Console.WriteLine(" Запись добавлена ");
                     }
-                }
-                catch
-                {
-                    Console.WriteLine("Не удалось. Проверьте существование записи в таблице Configuration с введенным IdConfiguration");
-                }
+                
+                
             }
         }
 
@@ -59,6 +55,23 @@ namespace DzTL1307.Repositories
                 default:
                     throw new ArgumentNullException("No suitable command found for the method");
             }
+        }
+        public override void Update(Configuration configuration)
+        {
+            if (configuration == null)
+            {
+                throw new ArgumentNullException(nameof(Сomponents));
+            }
+            using var connection = new SqlConnection(DzTL1307.Properties.Resources.ConnectioonString);
+            connection.Open();
+
+            using SqlCommand sqlCommand = connection.CreateCommand();
+            sqlCommand.CommandText = "update [Configuration] set [Picker] = @picker, [Description]=@description,[Type]=@type  where [Id] = @id";
+            sqlCommand.Parameters.Add("@id", SqlDbType.Int).Value = configuration.Id;
+            sqlCommand.Parameters.Add("@picker", SqlDbType.NVarChar, 100).Value = configuration.Picker;
+            sqlCommand.Parameters.Add("@description", SqlDbType.NVarChar, 1000).Value = configuration.Description;
+            sqlCommand.Parameters.Add("@type", SqlDbType.NVarChar, 100).Value = configuration.Type;
+            sqlCommand.ExecuteNonQuery();
         }
     }
 

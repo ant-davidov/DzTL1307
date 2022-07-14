@@ -12,5 +12,6 @@ namespace DzTL1307.Repositories
         T GetById(int id);
         void Insert(T model);
         void Delete(int id);
+        void Update(T model);
     }
 }

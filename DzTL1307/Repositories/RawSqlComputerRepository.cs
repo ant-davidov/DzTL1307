@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DzTL1307.Models;
 using System.Data.SqlClient;
+using System.Data;
 
 namespace DzTL1307.Repositories
 {
@@ -17,7 +18,7 @@ namespace DzTL1307.Repositories
                 con.Open();
                 try
                 {
-                    using (SqlCommand command = new SqlCommand("INSERT INTO Сomponents VALUES(@Owner,@TotalPrice, @IdConfiguration)", con))
+                    using (SqlCommand command = new SqlCommand("INSERT INTO Computer VALUES(@Owner,@TotalPrice, @IdConfiguration)", con))
                     {
                         command.Parameters.Add(new SqlParameter(@"Owner", computer.Owner));
                         command.Parameters.Add(new SqlParameter(@"TotalPrice", computer.TotalPrice));
@@ -58,6 +59,23 @@ namespace DzTL1307.Repositories
                 default:
                     throw new ArgumentNullException("No suitable command found for the method");
             }
+        }
+        public override void Update(Computer computer)
+        {
+            if (computer == null)
+            {
+                throw new ArgumentNullException(nameof(Computer));
+            }
+
+            using var connection = new SqlConnection(DzTL1307.Properties.Resources.ConnectioonString);
+            connection.Open();
+
+            using SqlCommand sqlCommand = connection.CreateCommand();
+            sqlCommand.CommandText = "update [Computer] set [Owner] = @owner, [TotalPrice]=@totalprice  where [Id] = @id";
+            sqlCommand.Parameters.Add("@id", SqlDbType.Int).Value = computer.Id;
+            sqlCommand.Parameters.Add("@owner", SqlDbType.NVarChar, 100).Value = computer.Owner;
+            sqlCommand.Parameters.Add("@totalprice", SqlDbType.NVarChar, 100).Value = computer.TotalPrice;
+            sqlCommand.ExecuteNonQuery();
         }
     }
 

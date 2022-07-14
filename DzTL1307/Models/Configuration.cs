@@ -22,5 +22,21 @@ namespace DzTL1307.Models
             Description = description;
             Type = type;
         }
+        public void Update(string picker, string description, string type)
+        {
+            Picker = picker;
+            Description = description;
+            Type = type;
+        }
+        public override string ToString()
+        {
+            return GetType().GetProperties()
+                .Select(info => (info.Name, Value: info.GetValue(this, null) ?? "(null)"))
+                .Aggregate(
+                    new StringBuilder(),
+                    (sb, pair) => sb.AppendLine($"{pair.Name}: {pair.Value}"),
+                    sb => sb.ToString());
+        }
+       
     }
 }

@@ -10,11 +10,14 @@ using DzTL1307.Models;
 namespace DzTL1307.Repositories
 {
 
-    public abstract class AbstracrRepository<T> : IRepository<T> where T : IModel
+    public abstract class AbstracrRepository<T> : IRepository<T> 
     { 
      
         protected abstract T CreateModel(SqlDataReader reader);
         protected abstract string GetSqlCommand(string NameOfMethod);
+        public abstract void Insert(T model);
+        public abstract void Update(T model);
+
 
 
         public IReadOnlyList<T> GetAll()
@@ -59,15 +62,13 @@ namespace DzTL1307.Repositories
         {
             using var connection = new SqlConnection(DzTL1307.Properties.Resources.ConnectioonString);
             connection.Open();
-
             using SqlCommand sqlCommand = connection.CreateCommand();
             sqlCommand.CommandText = GetSqlCommand(System.Reflection.MethodBase.GetCurrentMethod().Name);
             sqlCommand.Parameters.Add("@id", SqlDbType.Int).Value = id;
-            sqlCommand.ExecuteNonQuery();
-            
-           
+            sqlCommand.ExecuteNonQuery();                   
         }
-        public abstract void Insert(T model);
+       
+
        
     }
 }

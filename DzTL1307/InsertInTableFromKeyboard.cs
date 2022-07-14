@@ -11,27 +11,32 @@ namespace DzTL1307
 {
     public  class InsertInTableFromKeyboard<T>
     {
-        public  void GoDo( T model)
+        public T GoDo(Type model)
         {
             List<object> TempSaveProp = new List<object>();
             PropertyInfo[] myPropertyInfo;
-            myPropertyInfo = model.GetType().GetProperties();
-            foreach(var prop in myPropertyInfo )
-            {
-                if (prop.Name.ToLower().Trim() == "id") continue;
-            link1:
-                
+            myPropertyInfo = model.GetProperties();
+            object[] argsForNewModel = new object[myPropertyInfo.Length];
 
-                Console.WriteLine($"Введите {prop.Name}");
+            for (int i=0;i<myPropertyInfo.Length;i++)
+            {
+                if (myPropertyInfo[i].Name.ToLower().Trim() == "id")
+                {
+                    argsForNewModel[i] = 0;
+                    continue;
+                }
+            link1:
+                Console.WriteLine($"Введите {myPropertyInfo[i].Name}");
                 string readKey = null;
                 while(String.IsNullOrEmpty(readKey))
                 {
                     readKey = Console.ReadLine();
                 }    
-                var converter = TypeDescriptor.GetConverter(prop.PropertyType);
+                var converter = TypeDescriptor.GetConverter(myPropertyInfo[i].PropertyType);
                 try
                 {
-                    model.GetType().GetProperty(prop.Name).SetValue(model, converter.ConvertFrom(readKey), null); 
+                    argsForNewModel[i] = converter.ConvertFrom(readKey);
+                   //model.GetType().GetProperty(myPropertyInfo[i].Name).SetValue(model, converter.ConvertFrom(readKey), null); 
                 }
                 catch
                 {
@@ -41,7 +46,8 @@ namespace DzTL1307
                
                 
             }
-            
+            return (T)Activator.CreateInstance(typeof(T), argsForNewModel);
+
         }
     }
 }

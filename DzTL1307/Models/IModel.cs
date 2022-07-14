@@ -9,5 +9,6 @@ namespace DzTL1307.Models
     public interface IModel
     {
         public int Id { get; }
+        public string ToString();
     }
 }
